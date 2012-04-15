@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Timeline</string>
+    <string name="settings_activity">Settings</string>
+    
+    <string-array name="fragment_names">
+        <item>MESSAGES</item>
+        <item>TIMELINE</item>
+        <item>MENTIONS</item>
+    </string-array>
+
+    <string name="avatar">Picture of User\'s Avatar</string>
+
+</resources>
