@@ -118,6 +118,7 @@ public class TimelineFragment extends BaseListFragment<Tweet> {
 			if (current.avatar == null) {
 				new ThumbnailDownloader(holder.avatar, current,
 						TimelineFragment.this).execute();
+				holder.avatar.setImageResource(R.drawable.ic_launcher);
 			} else {
 				holder.avatar.setImageBitmap(current.avatar);
 			}

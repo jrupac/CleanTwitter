@@ -16,11 +16,22 @@
         <activity
             android:name=".CleanTwitterActivity"
             android:label="@string/app_name"
+            android:launchMode="singleInstance"
             android:theme="@style/Theme.StyledTabs" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="login"
+                    android:scheme="cleantwitter" />
             </intent-filter>
         </activity>
     </application>

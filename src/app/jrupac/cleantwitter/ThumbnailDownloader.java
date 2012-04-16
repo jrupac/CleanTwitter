@@ -77,6 +77,6 @@ public class ThumbnailDownloader extends AsyncTask<Void, Void, Void> {
 		}
 
 		mTf.onThumbnailDownload(mBmp, mView);
-		Log.d(TAG, "Done downloading thumbnail.");
+		//Log.d(TAG, "Done downloading thumbnail.");
 	}
 }
