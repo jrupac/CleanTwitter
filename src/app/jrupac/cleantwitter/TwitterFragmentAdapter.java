@@ -21,7 +21,7 @@ public class TwitterFragmentAdapter extends FragmentPagerAdapter implements
 	public Fragment getItem(int position) {
 		switch (position % mCount) {
 		case Utils.TWEETS_TAB:
-			return TimelineFragment.instantiate();
+			return TimelineFragment.getInstance();
 
 		case Utils.MENTIONS_TAB:
 		case Utils.MESSAGES_TAB:

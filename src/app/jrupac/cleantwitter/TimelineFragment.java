@@ -19,20 +19,32 @@ public class TimelineFragment extends BaseListFragment<Tweet> {
 
 	public final String TAG = Utils.TAG_BASE + this.getClass().getName();
 
+	private static TimelineFragment mTimelineFragment = null;
+
 	private View mView;
 	private ListView mListView;
 	private Tweet[] mUpdatedTweets = null;
 	private TweetAdapter mAdapter = null;
 	private Context mContext;
+	private OAuth mOAuth;
 
-	public static TimelineFragment instantiate() {
-		return new TimelineFragment();
+	public static TimelineFragment getInstance() {
+		if (mTimelineFragment == null) {
+			mTimelineFragment = new TimelineFragment();
+		}
+
+		return mTimelineFragment;
 	}
 
 	@Override
+	public void onForceRefresh() {
+		Log.i(TAG, "Getting updates for timeline");
+		TwitterAPI.getInstance().getTimeline(this);
+	}
+	
+	@Override
 	public void onParseCompleted(Tweet[] tweets) {
 		mUpdatedTweets = tweets;
-
 		postResults(false);
 	}
 
@@ -54,10 +66,12 @@ public class TimelineFragment extends BaseListFragment<Tweet> {
 		mListView = (ListView) mView.findViewById(android.R.id.list);
 		mListView.setEmptyView(mView.findViewById(android.R.id.empty));
 		mContext = getActivity().getApplicationContext();
+		mOAuth = OAuth.getInstance((BaseActivity) getActivity());
 
-		Log.i(TAG, "Getting updates for timeline");
-
-		(TwitterAPI.getInstance()).getTimeline(this);
+		if (mOAuth.isLoggedIn()) {
+			Log.i(TAG, "Getting updates for timeline");
+			TwitterAPI.getInstance().getTimeline(this);
+		}
 
 		return mView;
 	}

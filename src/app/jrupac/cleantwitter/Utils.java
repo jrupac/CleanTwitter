@@ -1,7 +1,6 @@
 package app.jrupac.cleantwitter;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.widget.Toast;
 
 public final class Utils {
@@ -9,7 +8,7 @@ public final class Utils {
 	public static final String TAG_BASE = "CT_";
 
 	public static final String CALLBACK_URL = "cleantwitter://login";
-	
+
 	public static final String PREFS_FILE = TAG_BASE + "prefs";
 
 	public static final int MESSAGES_TAB = 0;
@@ -21,9 +20,5 @@ public final class Utils {
 
 	public static void message(Context context, String text) {
 		Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
-	}
-	
-	public static boolean isLoggedIn(SharedPreferences settings) {
-		return (settings.getString("accessToken", null) != null);
 	}
 }

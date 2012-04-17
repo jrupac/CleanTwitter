@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Timeline</string>
+    <string name="app_name">Clean Twitter</string>
     <string name="settings_activity">Settings</string>
-    
+    <string name="login">Log In</string>
+    <string name="logout">Log Out</string>
+    <string name="not_logged_in">Not Logged In.</string>
+
     <string-array name="fragment_names">
         <item>MESSAGES</item>
         <item>TIMELINE</item>
