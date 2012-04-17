@@ -3,7 +3,6 @@ package app.jrupac.cleantwitter;
 import java.text.SimpleDateFormat;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -41,16 +40,11 @@ public class TimelineFragment extends BaseListFragment<Tweet> {
 		Log.i(TAG, "Getting updates for timeline");
 		TwitterAPI.getInstance().getTimeline(this);
 	}
-	
+
 	@Override
 	public void onParseCompleted(Tweet[] tweets) {
 		mUpdatedTweets = tweets;
 		postResults(false);
-	}
-
-	@Override
-	public void onThumbnailDownload(Bitmap bmp, View v) {
-		((ImageView) v).setImageBitmap(bmp);
 	}
 
 	private void postResults(boolean getFromDB) {
@@ -130,11 +124,9 @@ public class TimelineFragment extends BaseListFragment<Tweet> {
 			holder.text.setText(Html.fromHtml(current.text));
 
 			if (current.avatar == null) {
-				new ThumbnailDownloader(holder.avatar, current,
-						TimelineFragment.this).execute();
-				holder.avatar.setImageResource(R.drawable.ic_launcher);
+				ThumbnailDownloader.fetchDrawable(current, holder.avatar);
 			} else {
-				holder.avatar.setImageBitmap(current.avatar);
+				holder.avatar.setImageDrawable(current.avatar);
 			}
 
 			return mView;

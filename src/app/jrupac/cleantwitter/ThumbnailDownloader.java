@@ -2,81 +2,68 @@ package app.jrupac.cleantwitter;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
+import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
-import android.view.View;
+import android.widget.ImageView;
 
-public class ThumbnailDownloader extends AsyncTask<Void, Void, Void> {
+public class ThumbnailDownloader {
 
-	public final String TAG = Utils.TAG_BASE + this.getClass().getName();
+	public static final String TAG = Utils.TAG_BASE + "ThumbnailDownloader";
 
-	private final int HORIZ_SIZE = 96;
-	private final int VERT_SIZE = 96;
-
-	private Tweet mTweet;
-	private InputStream mIs;
-	private BaseListFragment<Tweet> mTf;
-	private URL mUrl;
-	private Bitmap mBmp;
-	private View mView;
-
-	public ThumbnailDownloader(View view, Tweet tweet,
-			BaseListFragment<Tweet> tf) {
-		mTweet = tweet;
-		mTf = tf;
-		mView = view;
-		mUrl = null;
-		mBmp = null;
-	}
-
-	@Override
-	protected void onPreExecute() {
-		try {
-			mUrl = new URL(mTweet.avatar_url);
-		} catch (Exception e) {
-			Log.e(TAG, "Could not parse URL.", e);
-		}
-
-		mIs = null;
-	}
-
-	@Override
-	protected Void doInBackground(Void... params) {
-		if (mUrl == null) {
-			return null;
-		}
+	private static Drawable doIt(String urlString) {
+		InputStream is = null;
+		Drawable drawable = null;
 
 		try {
-			mIs = mUrl.openStream();
-			mBmp = Bitmap.createScaledBitmap(BitmapFactory.decodeStream(mIs),
-					HORIZ_SIZE, VERT_SIZE, true);
-			mTweet.avatar = mBmp;
-		} catch (Exception e) {
-			Log.e(TAG, "Could not download thumbnail.", e);
+			is = new URL(urlString).openStream();
+			drawable = Drawable.createFromStream(is, "src");
+		} catch (MalformedURLException e) {
+			Log.e(TAG, "Failed to parse URL.", e);
+		} catch (IOException e) {
+			Log.e(TAG, "Failed to fetch drawable", e);
 		} finally {
-			if (mIs != null) {
+			if (is != null) {
 				try {
-					mIs.close();
+					is.close();
 				} catch (IOException ioe) {
-					Log.e(TAG, "Could not close input stream.", ioe);
+					Log.e(TAG, "Failed to close stream.", ioe);
 				}
 			}
 		}
 
-		return null;
+		return drawable;
 	}
 
-	@Override
-	protected void onPostExecute(Void result) {
-		if (mUrl == null) {
+	public static void fetchDrawable(final Tweet tweet,
+			final ImageView imageView) {
+		if (tweet.isDownloading.get()) {
 			return;
 		}
 
-		mTf.onThumbnailDownload(mBmp, mView);
-		//Log.d(TAG, "Done downloading thumbnail.");
+		tweet.isDownloading.set(true);
+		imageView.setImageResource(R.drawable.ic_launcher);
+
+		final String urlString = tweet.avatar_url;
+
+		final Handler handler = new Handler() {
+			@Override
+			public void handleMessage(Message message) {
+				tweet.avatar = (Drawable) message.obj;
+				imageView.setImageDrawable((Drawable) message.obj);
+				tweet.isDownloading.set(false);
+			}
+		};
+
+		new Thread() {
+			@Override
+			public void run() {
+				handler.sendMessage(handler.obtainMessage(1, doIt(urlString)));
+			}
+		}.start();
 	}
 }
