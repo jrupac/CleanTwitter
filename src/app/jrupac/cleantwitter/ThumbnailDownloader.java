@@ -15,12 +15,12 @@ public class ThumbnailDownloader {
 
 	public static final String TAG = Utils.TAG_BASE + "ThumbnailDownloader";
 
-	private static Drawable doIt(String urlString) {
+	private static Drawable doIt(URL url) {
 		InputStream is = null;
 		Drawable drawable = null;
 
 		try {
-			is = new URL(urlString).openStream();
+			is = url.openStream();
 			drawable = Drawable.createFromStream(is, "src");
 		} catch (MalformedURLException e) {
 			Log.e(TAG, "Failed to parse URL.", e);
@@ -39,30 +39,28 @@ public class ThumbnailDownloader {
 		return drawable;
 	}
 
-	public static void fetchDrawable(final Tweet tweet,
-			final ImageView imageView) {
-		if (tweet.isDownloading.get()) {
+	public static void fetchDrawable(final TweetData current, final ImageView iv) {
+		if (current.isDownloading.get()) {
 			return;
 		}
 
-		tweet.isDownloading.set(true);
-		imageView.setImageResource(R.drawable.ic_launcher);
-
-		final String urlString = tweet.avatar_url;
+		current.isDownloading.set(true);
+		iv.setImageResource(R.drawable.ic_launcher);
 
 		final Handler handler = new Handler() {
 			@Override
 			public void handleMessage(Message message) {
-				tweet.avatar = (Drawable) message.obj;
-				imageView.setImageDrawable((Drawable) message.obj);
-				tweet.isDownloading.set(false);
+				current.avatar = (Drawable) message.obj;
+				iv.setImageDrawable((Drawable) message.obj);
+				current.isDownloading.set(false);
 			}
 		};
 
 		new Thread() {
 			@Override
 			public void run() {
-				handler.sendMessage(handler.obtainMessage(1, doIt(urlString)));
+				handler.sendMessage(handler.obtainMessage(1,
+						doIt(current.avatar_url)));
 			}
 		}.start();
 	}

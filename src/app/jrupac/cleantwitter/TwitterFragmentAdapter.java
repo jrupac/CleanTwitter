@@ -1,10 +1,10 @@
 package app.jrupac.cleantwitter;
 
-import com.viewpagerindicator.TitleProvider;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+
+import com.viewpagerindicator.TitleProvider;
 
 public class TwitterFragmentAdapter extends FragmentPagerAdapter implements
 		TitleProvider {

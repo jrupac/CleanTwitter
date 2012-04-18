@@ -2,9 +2,12 @@ package app.jrupac.cleantwitter;
 
 import twitter4j.AsyncTwitter;
 import twitter4j.AsyncTwitterFactory;
+import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import twitter4j.http.AccessToken;
-import twitter4j.http.RequestToken;
+import twitter4j.TwitterFactory;
+import twitter4j.auth.AccessToken;
+import twitter4j.auth.RequestToken;
+import twitter4j.conf.ConfigurationBuilder;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -43,6 +46,26 @@ public class OAuth {
 		}
 
 		return mOAuth;
+	}
+
+	public AsyncTwitter getAsyncTwitterInstance() {
+		ConfigurationBuilder cb = new ConfigurationBuilder();
+		cb.setOAuthConsumerKey(Keys.consumerKey);
+		cb.setOAuthConsumerSecret(Keys.consumerSecret);
+		cb.setOAuthAccessToken(mSettings.getString("accessToken", null));
+		cb.setOAuthAccessTokenSecret(mSettings.getString("accessSecret", null));
+		AsyncTwitterFactory tf = new AsyncTwitterFactory(cb.build());
+		return tf.getInstance();
+	}
+	
+	public Twitter getTwitterInstance() {
+		ConfigurationBuilder cb = new ConfigurationBuilder();
+		cb.setOAuthConsumerKey(Keys.consumerKey);
+		cb.setOAuthConsumerSecret(Keys.consumerSecret);
+		cb.setOAuthAccessToken(mSettings.getString("accessToken", null));
+		cb.setOAuthAccessTokenSecret(mSettings.getString("accessSecret", null));
+		TwitterFactory tf = new TwitterFactory(cb.build());
+		return tf.getInstance();
 	}
 
 	public void doLogin() {
